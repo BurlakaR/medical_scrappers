@@ -7,11 +7,16 @@ def one_page_scrap(parser, url):
     tools.waiting_load(parser)
     question = parser.find_element_by_xpath('//div[contains(@class, "question-problem__describe")]')
     text = question.text
-    answers = parser.find_elements_by_xpath('//div[contains(@class, "question-answer__content")]]')
+    answers = parser.find_elements_by_xpath('//div[contains(@class, "question-answer__content")]')
     for answer in answers:
-        text += answer.text
-    print(text)
-    return text
+        text += '\n@\n' + answer.text
+    lines = text.split("\n")
+    non_empty_lines = [line for line in lines if line.strip() != ""]
+    string_without_empty_lines = ""
+    for line in non_empty_lines:
+        string_without_empty_lines += line + "\n"
+    print(string_without_empty_lines)
+    return string_without_empty_lines
 
 
 driver = webdriver.Chrome('chromedriver.exe')
@@ -28,12 +33,16 @@ while True:
     print(len(questions))
     links = [question.find_element_by_xpath('.//a').get_attribute('href') for question in questions]
     print(links)
+    current_page = driver.current_url
     for link in links:
-        one_page_scrap(driver, link)
-
-    next = (driver.find_elements_by_class_name('pagination__item'))[-1]
+        name = link[link.rindex('/')+1:]
+        with open('texts/' + name + '.txt', 'w', encoding='utf-8') as text_file:
+            text_file.write(one_page_scrap(driver, link))
+    driver.get(current_page)
+    tools.waiting_load(driver)
+    nextPage = (driver.find_elements_by_class_name('pagination__item'))[-1]
     try:
-        next_link = next.find_element_by_xpath('.//a')
+        next_link = nextPage.find_element_by_xpath('.//a')
     except:
         break
     driver.get(next_link.get_attribute('href'))
