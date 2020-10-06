@@ -15,11 +15,12 @@ def one_page_scrap(parser, url):
     string_without_empty_lines = ""
     for line in non_empty_lines:
         string_without_empty_lines += line + "\n"
-    print(string_without_empty_lines)
     return string_without_empty_lines
 
-
-driver = webdriver.Chrome('chromedriver.exe')
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+options.add_argument('--window-size=1920,1080')
+driver = webdriver.Chrome('chromedriver', chrome_options=options)
 driver.get('https://pytania.abczdrowie.pl/pytania-do-specjalistow')
 tools.waiting_load(driver)
 
