@@ -26,7 +26,7 @@ def scrap_one_page(page_parser, page):
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 options.add_argument('--window-size=1920,1080')
-driver = webdriver.Chrome('chromedriver', chrome_options=options)
+driver = webdriver.Chrome('./chromedriver', chrome_options=options)
 driver.get('https://www.mp.pl/pacjent/')
 tools.waiting_load(driver)
 

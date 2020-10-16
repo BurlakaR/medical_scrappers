@@ -20,7 +20,7 @@ def one_page_scrap(parser, url):
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 options.add_argument('--window-size=1920,1080')
-driver = webdriver.Chrome('chromedriver', chrome_options=options)
+driver = webdriver.Chrome('./chromedriver', chrome_options=options)
 driver.get('https://pytania.abczdrowie.pl/pytania-do-specjalistow')
 tools.waiting_load(driver)
 
