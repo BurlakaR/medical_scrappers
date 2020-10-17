@@ -36,11 +36,14 @@ links_to_scrap = [link.get_attribute('href') + 'lista' for link in links
 for list in links_to_scrap:
     questions = scrap_one_list(driver, list)
     for q in questions:
-        text = scrap_one_page(driver, q)
-        name = q[q.rindex('/') + 1:]
-        name = str(name).replace('?', '').replace('=', '')
-        with open('texts/' + name + '.txt', 'w', encoding='utf-8') as text_file:
-            text_file.write(text)
+        try:
+            text = scrap_one_page(driver, q)
+            name = q[q.rindex('/') + 1:]
+            name = str(name).replace('?', '').replace('=', '')
+            with open('texts/' + name + '.txt', 'w', encoding='utf-8') as text_file:
+                text_file.write(text)
+        except:
+            pass
 
 
 
