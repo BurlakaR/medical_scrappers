@@ -35,15 +35,25 @@ links_to_scrap = [link.get_attribute('href') + 'lista' for link in links
                   if 'pacjent' in link.get_attribute('href') and 'leki' not in link.get_attribute('href')]
 for list in links_to_scrap:
     questions = scrap_one_list(driver, list)
+    questions = [q for q in questions if 'pacjent' in q]
+    print(list + " : " + str(len(questions)))
     for q in questions:
-        try:
-            text = scrap_one_page(driver, q)
-            name = q[q.rindex('/') + 1:]
-            name = str(name).replace('?', '').replace('=', '')
-            with open('texts/' + name + '.txt', 'w', encoding='utf-8') as text_file:
-                text_file.write(text)
-        except:
-            pass
+        flag = True
+        text = ''
+        for i in range(5):
+            try:
+                text = scrap_one_page(driver, q)
+                flag = False
+                break
+            except:
+                pass
+        if flag:
+            continue
+        name = q[q.rindex('/') + 1:]
+        name = str(name).replace('?', '').replace('=', '')
+        with open('texts/' + name + '.txt', 'w', encoding='utf-8') as text_file:
+            text_file.write(text)
+
 
 
 
