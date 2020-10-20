@@ -35,6 +35,7 @@ links_to_scrap = [link.get_attribute('href') + 'lista' for link in links
                   if 'pacjent' in link.get_attribute('href') and 'leki' not in link.get_attribute('href')]
 for list in links_to_scrap:
     flag_list = True
+    questions = []
     for i in range(5):
         try:
             questions = scrap_one_list(driver, list)
