@@ -24,6 +24,10 @@ def scrap_one_page(page_parser, page):
 
 
 options = webdriver.ChromeOptions()
+chrome_prefs = {}
+options.experimental_options["prefs"] = chrome_prefs
+chrome_prefs["profile.default_content_settings"] = {"images": 2}
+chrome_prefs["profile.managed_default_content_settings"] = {"images": 2}
 options.add_argument('--headless')
 options.add_argument('--window-size=1920,1080')
 driver = webdriver.Chrome('./chromedriver', chrome_options=options)
@@ -40,10 +44,13 @@ for list in links_to_scrap:
         try:
             questions = scrap_one_list(driver, list)
             flag_list = False
+            print(list + ' passed')
             break
         except:
+            print(list + ' error')
             pass
     if flag_list:
+        print(list + ' failed')
         continue
     questions = [q for q in questions if 'pacjent' in q]
     print(list + " : " + str(len(questions)))
