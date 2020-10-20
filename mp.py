@@ -39,7 +39,7 @@ for list in links_to_scrap:
     for i in range(5):
         try:
             questions = scrap_one_list(driver, list)
-            flag = False
+            flag_list = False
             break
         except:
             pass
