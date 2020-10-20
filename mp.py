@@ -34,7 +34,16 @@ links = driver.find_elements_by_xpath('.//ul[contains(@class, "list-unstyled")]/
 links_to_scrap = [link.get_attribute('href') + 'lista' for link in links
                   if 'pacjent' in link.get_attribute('href') and 'leki' not in link.get_attribute('href')]
 for list in links_to_scrap:
-    questions = scrap_one_list(driver, list)
+    flag_list = True
+    for i in range(5):
+        try:
+            questions = scrap_one_list(driver, list)
+            flag = False
+            break
+        except:
+            pass
+    if flag_list:
+        continue
     questions = [q for q in questions if 'pacjent' in q]
     print(list + " : " + str(len(questions)))
     for q in questions:
