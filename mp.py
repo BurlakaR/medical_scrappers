@@ -1,3 +1,5 @@
+import os
+
 from selenium import webdriver
 import tools
 
@@ -37,6 +39,8 @@ tools.waiting_load(driver)
 links = driver.find_elements_by_xpath('.//ul[contains(@class, "list-unstyled")]/li/a')
 links_to_scrap = [link.get_attribute('href') + 'lista' for link in links
                   if 'pacjent' in link.get_attribute('href') and 'leki' not in link.get_attribute('href')]
+
+oldquestions = [f.replace('.txt', '') for f in os.listdir('./texts')]
 for list in links_to_scrap:
     flag_list = True
     questions = []
@@ -55,6 +59,8 @@ for list in links_to_scrap:
     questions = [q for q in questions if 'pacjent' in q]
     print(list + " : " + str(len(questions)))
     for q in questions:
+        if any(old in q for old in oldquestions):
+            continue
         flag = True
         text = ''
         for i in range(5):
