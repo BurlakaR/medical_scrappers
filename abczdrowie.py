@@ -1,3 +1,5 @@
+import os
+
 from selenium import webdriver
 import tools
 
@@ -18,6 +20,10 @@ def one_page_scrap(parser, url):
     return string_without_empty_lines
 
 options = webdriver.ChromeOptions()
+chrome_prefs = {}
+options.experimental_options["prefs"] = chrome_prefs
+chrome_prefs["profile.default_content_settings"] = {"images": 2}
+chrome_prefs["profile.managed_default_content_settings"] = {"images": 2}
 options.add_argument('--headless')
 options.add_argument('--window-size=1920,1080')
 driver = webdriver.Chrome('./chromedriver', chrome_options=options)
@@ -29,16 +35,20 @@ for button in buttons:
     if 'AKCEPTUJĘ' in button.text:
         button.click()
 
+oldquestions = [f.replace('.txt', '') for f in os.listdir('./texts')]
 while True:
     questions = driver.find_elements_by_class_name('questions-results__item')
     print(len(questions))
     links = [question.find_element_by_xpath('.//a').get_attribute('href') for question in questions]
+    links = [link for link in links if not any(old in link for old in oldquestions)]
     print(links)
     current_page = driver.current_url
     for link in links:
         name = link[link.rindex('/')+1:]
         with open('texts/' + name + '.txt', 'w', encoding='utf-8') as text_file:
-            text_file.write(one_page_scrap(driver, link))
+            text = one_page_scrap(driver, link)
+            if text is not '':
+                text_file.write(text)
     driver.get(current_page)
     tools.waiting_load(driver)
     nextPage = (driver.find_elements_by_class_name('pagination__item'))[-1]
